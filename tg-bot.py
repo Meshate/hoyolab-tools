@@ -1,4 +1,4 @@
-from .util import log
+from .utils import log
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
