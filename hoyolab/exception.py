@@ -1,4 +1,4 @@
-from .utils import log
+from utils import log
 
 class RequestException(Exception):
     def __init__(self, message):

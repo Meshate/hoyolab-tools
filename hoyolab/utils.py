@@ -1,15 +1,6 @@
-import logging
 import time
 import requests
-
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO,
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-
-log = logging
+from utils import log
 
 def cookie_to_dict(cookie):
     if cookie and '=' in cookie:
@@ -34,7 +25,7 @@ def request(*args, **kwargs):
             is_retry = False
         except Exception as e:
             if count == max_retries:
-                raise e
+                return False
             log.error(('Request failed: {}').format(e))
             count += 1
             log.info(

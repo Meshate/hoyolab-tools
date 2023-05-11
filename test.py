@@ -7,14 +7,18 @@ def a(func):
         return func(t)
     return w
 
-def c(func):
-    def w(*argc):
 
-
-
+from utils import log
 @a
 def test(t: int):
     print(t)
 
+class t:
+    def __init__(self):
+        self.a = 1
+
 if __name__ == '__main__':
-    test(2)
+    d = {
+        1: 1
+    }
+    print(d.get(2))
