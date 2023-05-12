@@ -1,3 +1,7 @@
+from datetime import datetime
+
+
+
 def a(func):
     def w(t:int):
         if t != 1:
@@ -18,7 +22,5 @@ class t:
         self.a = 1
 
 if __name__ == '__main__':
-    d = {
-        1: 1
-    }
-    print(d.get(2))
+    a = datetime.now()
+    print(not a)

@@ -24,6 +24,10 @@ checked-in
 msg: {}
 '''
 
+check_in_template_error_msg = '''
+check-in error
+'''
+
 check_in_template_error_cmd = '''
 Error in check-in
 please use /c {game}

@@ -1,5 +1,5 @@
 import http
-
+from datetime import datetime
 from .utils import cookie_to_dict, request, extract_subset_of_dict
 from utils import log
 
@@ -12,7 +12,9 @@ class Base(object):
         self.cookie = extract_subset_of_dict(cookie_to_dict(cookie), ['cookie_token', 'account_id'])
         self.headers = headers
         self.account_info = {}
+        self._account_info_last_update = None
         self._sign_info = {}
+        self._sign_info_last_update = None
         self.account_id = self.cookie['account_id']
         self.server = None
         self.game_uid = None
@@ -31,33 +33,33 @@ class Base(object):
 
     def require_account_info(func):
         def update(self):
-            if len(self.account_info) < 1:
+            if (len(self.account_info) < 1) or (not self._account_info_last_update) or ((datetime.now() - self._account_info_last_update).total_seconds() > 3600):
                 response = request('get', self.account_info_url, headers=self.headers, cookies=self.cookie).json()
                 if response['retcode'] != 0:
                     log.error(f'url={self.account_info_url}, resp={response["message"]}')
-                    return False
+                    return None
                 account_info = [i for i in response['data']['list'] if i['game_id'] == self.game_id]
                 if len(account_info) != 1:
-                    return False
+                    return None
                 self.account_info = account_info[0]
-
+                self._account_info_last_update = datetime.now()
             return func(self)
         return update
 
     def require_sign_info(func):
         def update(self):
-            if len(self._sign_info) < 1:
+            if (len(self._sign_info) < 1) or (not self._sign_info_last_update) or ((datetime.now() - self._sign_info_last_update).total_seconds() > 3600):
                 r = request('get', self.sign_info_url, headers=self.headers, cookies=self.cookie)
                 log.debug(f'code = {r.status_code}, method = get, url = {self.sign_info_url}, headers = {self.headers}, cookies = {self.cookie}')
                 if r.status_code != http.HTTPStatus.OK:
-                    return False
+                    return None
                 response = r.json()
                 if response['retcode'] != 0:
                     log.error(f'url={self.sign_info_url}, resp={response["message"]}')
-                    return False
+                    return None
                 self._sign_info = response['data']
+                self._sign_info_last_update = datetime.now()
             return func(self)
-
         return update
 
 
